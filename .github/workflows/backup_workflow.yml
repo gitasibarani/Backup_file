@@ -40,9 +40,22 @@ jobs:
           name: backup-logs
           path: backup_log.log
 
-      # Upload Artifact
+      # Upload Docker Image as Artifact
       - name: Upload Docker image as artifact
         uses: actions/upload-artifact@v3
         with:
           name: backup-file-image
           path: path/to/file
+
+      # Build docker image 
+      - name: Build Docker image and save output
+        run: docker build -t gitarosalinasibarani/backup-file:1.0 . > build_output.txt
+
+      #
+      - name: Upload Build Output as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: build_output.txt
+
+
