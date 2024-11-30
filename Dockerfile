@@ -14,5 +14,4 @@ RUN pip install virtualenv
 RUN python -m venv /venv
 
 # Aktifkan virtual environment saat container dijalankan
-CMD ["/venv/bin/python", "main.py"]
-
+CMD ["/venv/bin/python", "/app/main.py"]

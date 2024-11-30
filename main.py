@@ -118,3 +118,7 @@ except Exception as e:
     error_message = f"Backup failed: {e}"
     logger.error(error_message)
     send_notification(email_config, "Backup Failed", error_message)
+
+with open("backup_result.txt", "w") as file:
+    file.write("Backup completed successfully.")
+
