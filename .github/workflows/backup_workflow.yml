@@ -14,7 +14,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
 
       # 1. Checkout code
@@ -25,74 +25,44 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 'Python 3.12.3'
+          python-version: '3.9-slim'
 
       # 3. Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+           pip install -r requirements.txt
 
       # 4. Run backup program 
       - name: Run Backup Script
         run: python main.py
 
-      - name: List files in current directory
-        run: ls -la
-
-      - name: Verify backup_result.txt exists
-        run: |
-          if [ -f "./backup_result.txt" ]; then
-            echo "File found"
-          else
-            echo "File not found"
-            exit 1
-          fi
-
+      # 5. Upload Backup Logs 
       - name: Upload Backup Logs
         uses: actions/upload-artifact@v4
         with:
           name: backup-logs
           path: ./backup_result.txt
 
-       # 6. Login to Docker Hub
-      - name: Login to Docker Hub
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # 7. Build Docker image
-      - name: Build Docker image
-        run: docker build -t gitarosalinasibarani/backup-file:1.0 .
-
-      # 8. Push Docker image to Docker Hub
-      - name: Push Docker image
-        run: docker push gitarosalinasibarani/backup-file:1.0
-
-      # 9. Build Docker image
+      # 6. Build Docker image
       - name: Build Docker image and save output
         run: docker build -t gitarosalinasibarani/backup-file:1.0 . > build_output.txt
 
-      # 10. Save Docker image to a .tar file and upload as artifact
+      # 7. Upload Build Output as Artifact
+      - name: Upload Build Output as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: ./backup_result.txt
+
+      # 8. Save Docker image to a .tar file and upload as artifact
       - name: Save Docker image and upload as artifact
         run: |
           docker save gitarosalinasibarani/backup-file:1.0 -o backup-file.tar
-
-      # 11. Upload docker image as artifact
       - name: Upload Docker image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: backup-file-image
           path: backup-file.tar
 
-      - name: Check git status
-        run: git status
-
-      # 12. Commir changes
-      - name: Commit changes
-        run: |
-          git config --global user.name "gita sibarani"
-          git config --global user.email "gitarosalinasibarani@gmail.com"
-          git add .
-          git commit -m "Update backup result"
-          git push https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/gitasibarani/Backup_file.git
+    
