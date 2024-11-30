@@ -39,3 +39,10 @@ jobs:
         with:
           name: backup-logs
           path: backup_log.log
+
+      # Upload Artifact
+      - name: Upload Docker image as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: backup-file-image
+          path: path/to/file
