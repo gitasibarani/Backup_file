@@ -42,7 +42,7 @@ jobs:
 
       # Upload Artifact
       - name: Upload Docker image as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: backup-file-image
           path: path/to/file
